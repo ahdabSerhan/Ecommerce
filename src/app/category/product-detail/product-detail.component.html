@@ -1,0 +1,107 @@
+<div class="my-container">
+    <div class="row">
+        <!-- Gallery -->
+        <div class="col-sm-6 col-xs-12">
+            <div *ngIf="data" class="gallery">
+                <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
+            </div>
+        </div>
+        <!-- Product Info -->
+        <div class="col-sm-6 col-xs-12">
+            <div class="caption">
+                <h2>{{data.name}}</h2>
+                <h3>{{data.description}}</h3>
+                <!-- On Sale -->
+                <p *ngIf="data.onSale" class="price">
+                    <del>${{data.costPrice}}</del>
+                    <span class="sale">${{data.salePrice}}</span>
+                </p>
+                <!-- Not On Sale -->
+                <p *ngIf="!data.onSale" class="price">
+                    <span>${{data.costPrice}}</span>
+                    <del style="visibility: hidden">not on sale</del>
+                </p>
+            </div>
+            <!-- <div class="container"> -->
+            <!-- <div class="row"> -->
+
+            <!-- Dropdown -->
+            <app-dropdown class="col-xs-6" style="margin-top:20px;" [data]="data.options" [header]="'Size'" (selected)="dropdownOnChange($event)"></app-dropdown>
+            <!-- Find size -->
+            <div class="col-xs-6">
+                <img style="width:50px;height:20px;margin-left:25px;" src="../../../assets/images/shoppyfit logo.png">
+                <button type="button" class="btn btn-primary find-size-btn" data-toggle="modal" data-target="#exampleModalCenter">Find Size</button>
+                <!-- <button type="button" class="btn btn-primary find-size-btn"><a (click)="goToLink('../../assets/renderModel.html')">Find Size</a></button> -->
+
+            </div>
+            <app-obj-render></app-obj-render>
+
+            <!-- </div> -->
+            <!-- Button trigger modal -->
+            <!-- </div> -->
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <!-- <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          </button>
+                        </div> -->
+                        <div class="modal-body">
+                            <div *ngIf="startVideo!=1; else videoContent">
+                                <button type="button" class="btn btn-primary find-size-btn" (click)="startVideo=1;">Continue</button>
+                            </div>
+                            <ng-template #videoContent>
+                                <div>
+
+                                    <app-video-record [events]="videoEvent.asObservable()"></app-video-record>
+                                </div>
+                            </ng-template>
+                            <!-- <app-render-obj></app-render-obj> -->
+                            <app-obj-render></app-obj-render>
+
+
+                            <ng-template>
+
+                            </ng-template>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="startVideo=0;stopVideo()">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quantity Input -->
+            <app-quantity-input [header]=" 'Quantity'" (valueChanged)="quantityOnChange($event)"></app-quantity-input>
+
+            <!-- Add to Cart -->
+            <button type="button" class="btn btn-primary add-cart-btn" [class.btn-disabled]="!data.inStock" [disabled]="!data.inStock" (click)="addToCart()">{{data.inStock?"Add to Cart" :"Out of Stock"}}</button>
+        </div>
+    </div>
+    <hr>
+    <!-- Description -->
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="des-header">Product Details</h3>
+            <div class="des-content">
+                {{data.detail}}
+            </div>
+        </div>
+    </div>
+    <hr>
+    <!-- Related Products -->
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="rd-header">Related Products</h3>
+            <div class="row">
+                <div *ngFor="let rp of relatedProducts" class="col-xs-6 col-sm-3">
+                    <app-product-thumbnail [data]="rp"></app-product-thumbnail>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

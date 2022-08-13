@@ -1,0 +1,46 @@
+[{
+        "name": "Women",
+        "hasChildren": true,
+        "children": [{
+                "name": "Jackets",
+                "redirect": "Jackets"
+            },
+            {
+                "name": "T-Shirts And Tops",
+                "redirect": "T-Shirts And Tops"
+            },
+            {
+                "name": "Jeans",
+                "redirect": "Jeans"
+            },
+            {
+                "name": "Dresses",
+                "redirect": "Dresses"
+            },
+            {
+                "name": "Trousers",
+                "redirect": "Trousers"
+            }
+        ]
+    },
+    {
+        "name": "Men",
+        "hasChildren": false,
+        "redirect": "empty"
+    },
+    {
+        "name": "Children",
+        "hasChildren": false,
+        "redirect": "empty"
+    },
+    {
+        "name": "Pregnant",
+        "hasChildren": false,
+        "redirect": "empty"
+    },
+    {
+        "name": "About Us",
+        "hasChildren": false,
+        "redirect": "empty"
+    }
+]

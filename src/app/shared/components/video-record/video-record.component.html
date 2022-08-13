@@ -1,0 +1,18 @@
+<!--video and canvas tags have local variable so they can be accessed by typescript-->
+<div id="app">
+    <div>
+        <video #video id="video" [ngStyle]="{ 'width': videoW <=200 ? videoW + 'px': '480px' , 'height': videoH <=200 ? videoH + 'px': '480px'}" autoplay="true"></video>
+    </div>
+
+    <!-- <div>
+      <button id="snap" (click)="capture()">Take Photo</button>
+  </div> -->
+
+    <canvas #canvas id="canvas" [ngStyle]="{ 'width': videoW <=200 ? videoW + 'px': '480px' , 'height': videoH <=200 ? videoH + 'px': '480px'}"></canvas>
+    <!-- <ul>
+        <li *ngFor="let capture of captures">
+            <img src="{{ capture }}" height="50" />
+
+        </li>
+    </ul> -->
+</div>
