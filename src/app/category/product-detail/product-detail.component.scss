@@ -100,6 +100,32 @@ hr {
     overflow-x: hidden;
 }
 
+.instructions {
+    width: 100%;
+    display: flex;
+    font-size: 12px;
+    flex-direction: column; //options : row | row-reverse | column | column-reverse
+    flex-wrap: wrap; //options : flex-start | flex-end | center | baseline | stretch
+    justify-content: center; //options : start |  center | space-between | space-around | space-evenly
+    align-items: center;
+    img {
+        width: 200px;
+    }
+}
+
+.iframe {
+    width: 600px;
+    height: 600px;
+    display: flex;
+    font-size: 12px;
+    flex-direction: column; //options : row | row-reverse | column | column-reverse
+    flex-wrap: wrap; //options : flex-start | flex-end | center | baseline | stretch
+    justify-content: center; //options : start |  center | space-between | space-around | space-evenly
+    align-items: center;
+    overflow-x: hidden!important;
+    overflow-y: hidden!important;
+}
+
 @media screen and (min-width:992px) {
     .caption {
         height: 235px;
