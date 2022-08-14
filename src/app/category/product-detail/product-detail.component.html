@@ -30,11 +30,10 @@
             <!-- Find size -->
             <div class="col-xs-6">
                 <img style="width:50px;height:20px;margin-left:25px;" src="../../../assets/images/shoppyfit logo.png">
-                <button type="button" class="btn btn-primary find-size-btn" data-toggle="modal" data-target="#exampleModalCenter">Find Size</button>
+                <button type="button" class="btn btn-primary find-size-btn" data-toggle="modal" data-target="#exampleModalCenter" (click)="step=1;">Find Size</button>
                 <!-- <button type="button" class="btn btn-primary find-size-btn"><a (click)="goToLink('../../assets/renderModel.html')">Find Size</a></button> -->
 
             </div>
-            <app-obj-render></app-obj-render>
 
             <!-- </div> -->
             <!-- Button trigger modal -->
@@ -49,26 +48,57 @@
           </button>
                         </div> -->
                         <div class="modal-body">
-                            <div *ngIf="startVideo!=1; else videoContent">
-                                <button type="button" class="btn btn-primary find-size-btn" (click)="startVideo=1;">Continue</button>
-                            </div>
-                            <ng-template #videoContent>
-                                <div>
+                            <ng-container [ngTemplateOutlet]="step==1 ? first : step==2 ? second :step==3? third : fourth"></ng-container>
+                            <ng-template #first>
 
-                                    <app-video-record [events]="videoEvent.asObservable()"></app-video-record>
+                                <div class="instructions">
+
+                                    <h1> Everything is ready <br>to get your<br> body measurements <br>for best results </h1>
+
+                                    <ul>
+                                        <li>
+                                            Wear tight-fitting cloths or a swimsuit.
+                                        </li>
+                                        <li>
+                                            Tie back long hair.
+                                        </li>
+                                        <li>Remove shoes.</li>
+                                        <li>Place device at hip-height at a 90 angle and take 5 steps bacl</li>
+                                    </ul>
+                                    <h2>NOTE: Your video will be deleted after 5 seconds of getting your measurements.</h2>
+                                    <img src="../../../assets/images/align.PNG">
+                                    <button type="button" class="btn btn-primary find-size-btn" (click)="step=2;">Continue</button>
                                 </div>
                             </ng-template>
-                            <!-- <app-render-obj></app-render-obj> -->
-                            <app-obj-render></app-obj-render>
+                            <ng-template #second>
+                                <div>
+                                    <app-video-record [events]="videoEvent.asObservable()"></app-video-record>
+                                </div>
+                                <button type="button" class="btn btn-primary find-size-btn" (click)="step=3;">Continue</button>
 
+                            </ng-template>
+                            <ng-template #third>
+                                <h1>3D Model</h1>
+                                <div>
+                                    <iframe class="iframe" src="../../../assets/render.html"></iframe>
+                                </div>
+                                <button type="button" class="btn btn-primary find-size-btn" (click)="step=4;">Continue</button>
 
-                            <ng-template>
+                            </ng-template>
+                            <ng-template #fourth>
+                                <h1>Recommendations</h1>
+                                <div>
+                                    loader for size recommendation
+                                </div>
+                                <div>
+                                    loader for style recommendation
+                                </div>
 
                             </ng-template>
 
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="startVideo=0;stopVideo()">Close</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="step=0;stopVideo()">Close</button>
                         </div>
                     </div>
                 </div>
