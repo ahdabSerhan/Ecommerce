@@ -5,13 +5,10 @@ import { HttpClient } from "@angular/common/http";
   providedIn: "root",
 })
 export class ApiService {
-  private url: string = "localhost:5000";
+  private url: string = "http://34.170.112.43:5000";
 
   constructor(private http: HttpClient) {}
   sendImage(image) {
-    return this.http.post<boolean>(
-      this.url + "/get_image?image=" + image,
-      null
-    );
+    return this.http.post<boolean>(this.url + "/pose?image=" + image, null);
   }
 }

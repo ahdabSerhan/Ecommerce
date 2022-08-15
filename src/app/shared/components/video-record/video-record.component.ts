@@ -1,24 +1,40 @@
-import { Component, OnInit, ViewChild, ElementRef, Input } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  Input,
+  Renderer2,
+  Output,
+  EventEmitter,
+} from "@angular/core";
+import * as posenet from "@tensorflow-models/posenet";
+
 import { DomSanitizer } from "@angular/platform-browser";
 import { Observable, Subscription } from "rxjs";
 // import { DeviceDetectorService } from "ngx-device-detector";
 
 import { ApiService } from "src/app/services/api.service";
+import { BodyMeasurements } from "src/app/interface/measurements";
 @Component({
   selector: "app-video-record",
   templateUrl: "./video-record.component.html",
   styleUrls: ["./video-record.component.scss"],
 })
 export class VideoRecordComponent implements OnInit {
+  @Input() stepInfo: number = 0;
+  @Input() heigh: number = 163; //cm
+
   @ViewChild("video") //variable from html
   public video: ElementRef;
-
   @ViewChild("canvas") //variable from html
+  public canvas: ElementRef;
+  public videoStopped = 0;
+  @Output() updateStep = new EventEmitter<number>();
   @Input()
   events: Observable<void>;
   private eventsSubscription: Subscription;
-
-  public canvas: ElementRef;
+  bodyMeasurements: BodyMeasurements;
   public deviceInfo = null;
   public captures: Array<any>;
   private imageSrc: string = "";
@@ -28,7 +44,27 @@ export class VideoRecordComponent implements OnInit {
     this.getDevice();
     this.captures = [];
   }
+  public getPose() {
+    async function estimatePoseOnImage(imageElement) {
+      // load the posenet model from a checkpoint
+      const net = await posenet.load();
+      const pose = await net.estimateSinglePose(imageElement, {
+        flipHorizontal: false,
+      });
+      return pose;
+    }
 
+    const imageElement = document.getElementById("cat");
+
+    const pose = estimatePoseOnImage(imageElement);
+    pose.then((res) => {
+      this.bodyMeasurements = new BodyMeasurements(
+        this.heigh,
+        res["keypoints"]
+      );
+      this.bodyMeasurements.setBodyMeasurements();
+    });
+  }
   public ngOnInit() {}
 
   public ngAfterViewInit() {
@@ -41,17 +77,23 @@ export class VideoRecordComponent implements OnInit {
           );
           this.video.nativeElement.srcObject = stream;
           this.video.nativeElement.play();
-          setInterval(() => {
-            if (this.captures.length < 10) {
+          let myInterval = setInterval(() => {
+            if (this.captures.length < 1) {
+              this.capture();
+              this.getPose();
               // this.sendPhoto(this.capture());
             } else {
+              clearInterval(myInterval); //stop that interval
               this.stopVideo(stream);
+              this.stepInfo = 3;
+              this.updateStep.emit(this.stepInfo);
             }
-          }, 2000);
+          }, 5000);
         })
         .catch((err) => alert(`Bummer! ${err.name}.`));
     }
   }
+
   getDevice(): string {
     if (
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -101,6 +143,7 @@ export class VideoRecordComponent implements OnInit {
       .getContext("2d")
       .drawImage(this.video.nativeElement, 0, 0, 640, 480);
     this.captures.push(this.canvas.nativeElement.toDataURL("image/png"));
+
     return this.canvas.nativeElement.toDataURL("image/png");
   }
 

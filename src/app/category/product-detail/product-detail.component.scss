@@ -94,7 +94,7 @@ hr {
 
 .modal {
     z-index: 2000!important;
-    // height: 60vh!important;
+    height: 100%!important;
     // margin-top: 40vh!important;
     overflow-y: hidden;
     overflow-x: hidden;
@@ -114,8 +114,9 @@ hr {
 }
 
 .iframe {
-    width: 600px;
-    height: 600px;
+    width: 480px;
+    height: 480px;
+    margin: 0 auto;
     display: flex;
     font-size: 12px;
     flex-direction: column; //options : row | row-reverse | column | column-reverse

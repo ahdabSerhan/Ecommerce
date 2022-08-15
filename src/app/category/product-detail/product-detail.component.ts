@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import {
   NgxGalleryOptions,
   NgxGalleryImage,
@@ -17,7 +17,6 @@ import { Subject } from "rxjs";
 })
 export class ProductDetailComponent implements OnInit {
   videoEvent: Subject<void> = new Subject<void>();
-
   data: ProductInfo;
   quantity = 1;
   step = 1;

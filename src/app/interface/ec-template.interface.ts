@@ -77,3 +77,46 @@ export interface DeliveryInfo {
   postcode: string;
   country: string;
 }
+// product in specific catagorey it will be from type shirt or tshort or blous
+class ProductType{
+  productTypeId:number;
+  productCatagorey:string; // shirt or blouse ..
+  measurements:ShirtM;
+}
+export interface ShirtM {
+  chest: number;
+  waist: number;
+  seat: number;
+  bicep: number;
+  shirtLength: number;
+  shoulderWidth: number;
+  sleeveLength: number;
+  cuffCircumference: number;
+  collarSize: number;
+}
+export interface linearMeasurements{
+  sleeveLength:number;
+  totalHight:number;
+  sholderToWaistFront:number;
+  sholderToWaistBack:number;
+}
+export interface bodyMeasuerments {
+  bust: number;
+  waist: number;
+  hip: number;
+  backWaist: number;
+  frontWaist: number;
+  hightBust: number;
+  highHip: number;
+  skirtLength: number;
+  inseam: number;
+
+  thigh: number;
+  ankle: number;
+  outseam: number;
+  neck: number;
+}
+export enum types {
+  shirt,
+  jeans,
+}
