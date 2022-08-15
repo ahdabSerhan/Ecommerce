@@ -53,7 +53,7 @@
 
                                 <div class="instructions">
 
-                                    <h1> Everything is ready <br>to get your<br> body measurements <br>for best results </h1>
+                                    <h3> Everything is ready <br>to get your<br> body measurements <br>for best results </h3>
 
                                     <ul>
                                         <li>
@@ -65,16 +65,16 @@
                                         <li>Remove shoes.</li>
                                         <li>Place device at hip-height at a 90 angle and take 5 steps bacl</li>
                                     </ul>
-                                    <h2>NOTE: Your video will be deleted after 5 seconds of getting your measurements.</h2>
+                                    <h4>NOTE: Your video will be deleted after 5 seconds of getting your measurements.</h4>
                                     <img src="../../../assets/images/align.PNG">
                                     <button type="button" class="btn btn-primary find-size-btn" (click)="step=2;">Continue</button>
                                 </div>
                             </ng-template>
                             <ng-template #second>
                                 <div>
-                                    <app-video-record [events]="videoEvent.asObservable()"></app-video-record>
+                                    <app-video-record [events]="videoEvent.asObservable()" [stepInfo]="2" (updateStep)="step=3;"></app-video-record>
                                 </div>
-                                <button type="button" class="btn btn-primary find-size-btn" (click)="step=3;">Continue</button>
+                                <!-- <button type="button" class="btn btn-primary find-size-btn" (click)="step=3;">Continue</button> -->
 
                             </ng-template>
                             <ng-template #third>
