@@ -5,7 +5,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" integrity="sha512-dLxUelApnYxpLt6K2iomGngnHO83iUvZytA3YjDUCjT0HDOHKXnVYdf3hU4JjM8uEhxf9nD1/ey98U3t2vZ0qQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://threejs.org/examples/js/loaders/OBJLoader.js"></script>
     <script src="https://r105.threejsfundamentals.org/threejs/resources/threejs/r105/js/controls/OrbitControls.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"></script>
+
     <script>
+        //globals 
+        //const loaderElement = document.getElementById('loader');
+
         // Gets the image file as base64 encoded string
         function getFileAsBase64(file) {
             return new Promise((resolve, reject) => {
@@ -45,9 +50,76 @@
             camera.position.set(0, 0, 5)
             return camera
         }
+        const empty = arr => arr.length = 0;
 
 
+
+        function JsonArr(arr) {
+            let formatted = [];
+            const JsonArr = arr.map((element, index) => {
+                let splitted = element.split(',')[1];
+                return splitted;
+            });
+
+            formatted.push({
+                'front': JsonArr[0]
+            });
+            formatted.push({
+                'side': JsonArr[1]
+            });
+
+            return JSON.stringify(formatted);
+        }
+
+        function startVideo() {
+            const captures = []
+            const webcamElement = document.getElementById('webcam');
+            const canvasElement = document.getElementById('canvas');
+            const webcam = new Webcam(webcamElement, 'user', canvasElement);
+            webcam.start()
+                .then(result => {
+                    document.getElementById('shape').style.display = "block";
+                    let myInterval = setInterval(() => {
+                        let picture = ''
+                        if (captures.length <= 2) {
+                            picture = webcam.snap();
+                            captures.push(picture);
+                            if (captures.length == 1) {
+                                //change the skelton to line, in order to take the side image
+                                document.getElementById('shape').style.display = "none"
+                                document.getElementById('line').style.display = "block"
+                            }
+                            console.log("The picture that captures ", picture)
+
+                        } else {
+                            document.getElementById('line').style.display = "none"
+                            clearInterval(myInterval); //stop that interval
+                            webcam.stop()
+
+                            pifu.render(JsonArr(captures))
+                            webcamElement.style.display = "none";
+                            canvasElement.style.display = "none";
+                            empty(captures);
+                        }
+                    }, 5000);
+
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+
+        }
+
+
+        //flip the camera
+        //stopCam(){
+        //   $('#cameraFlip').click(function() {
+        //        webcam.flip();
+        //       webcam.start();  
+        //   });
+        // }
         class PifuRenderer {
+            loaderElement = document.getElementById('loader');
             constructor(server_uri, target_element) {
                 this.server_uri = server_uri
 
@@ -72,10 +144,11 @@
             }
 
             // Renders an image file (path) using PIFU.
-            async render(file) {
-                const base64_img = await getFileAsBase64(file)
-                var obj_text = await this.callPifuServer(base64_img)
-
+            // input is a json with 2 keys : fornt and side
+            async render(captures) {
+                //const base64_img = await getFileAsBase64(captures[0])
+                this.loaderElement.style.display = "block";
+                var obj_text = await this.callPifuServer(captures)
                 var obj = this.loader.parse(obj_text)
                 obj.name = '3dmodelpose'
 
@@ -83,7 +156,7 @@
                 if (selectedObject) {
                     this.scene.remove(selectedObject)
                 }
-
+                this.loaderElement.style.display = "none";
                 this.scene.add(obj)
             }
 
@@ -106,25 +179,97 @@
     <title>PiFu Viewer</title>
 </head>
 
-<body>
-    <div style="margin: 5px; padding: 5px">
+<body onload="startVideo()">
+    <style>
+        #shape {
+            display: none;
+            background: url('./images/bodeyShape.png');
+            width: 180px;
+            height: 450px;
+            background-repeat: no-repeat;
+            background-repeat: no-repeat;
+            position: absolute;
+            opacity: 0.5;
+            background-size: cover;
+            left: 150px;
+            top: 50px;
+            z-index: 200;
+            -o-object-fit: cover;
+            object-fit: cover;
+            -o-object-position: 80% 100%;
+            object-position: 80% 100%;
+        }
+        
+        #line {
+            display: none;
+            width: 112px;
+            height: 400px;
+            border-right: 8px solid rgb(229, 100, 197);
+            border-radius: 8px;
+            position: absolute;
+            left: 250px;
+            top: 50px;
+            z-index: 200;
+        }
+        
+        #loader {
+            display: none;
+            margin-left: 150px;
+            margin-top: 150px;
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #b54fae;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite;
+            /* Safari */
+            animation: spin 2s linear infinite;
+        }
+        /* Safari */
+        
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+        
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+    <div>
+        <div id="shape"></div>
+        <div id="line"></div>
+        <video id="webcam" autoplay playsinline width="640" height="480"></video>
+        <canvas id="canvas" class="d-none" style="display:none;"></canvas>
+    </div>
+    <!-- <div style="margin: 5px; padding: 5px">
         <h2>body measurements </h2>
         <ul>
             <li> Waist</li>
         </ul>
         <input class="form-control form-control-lg" id="selectAvatar" type="file" />
 
-    </div>
+    </div> -->
+    <div id="loader"></div>
 
     <div id="container"></div>
 
     <script>
-        const server_uri = "http://34.170.112.43:5000/pose"
+        const server_uri = "http://35.188.68.63:5000/pose"
         pifu = new PifuRenderer(server_uri, document.getElementById('container'))
         pifu.animate()
-        document.getElementById("selectAvatar").addEventListener("change", (event) => {
-            pifu.render(event.target.files[0])
-        });
+            // document.getElementById("selectAvatar").addEventListener("change", (event) => {
+            //    pifu.render(event.target.files[0])
+            // });
     </script>
 </body>
 

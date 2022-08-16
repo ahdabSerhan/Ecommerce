@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" integrity="sha512-dLxUelApnYxpLt6K2iomGngnHO83iUvZytA3YjDUCjT0HDOHKXnVYdf3hU4JjM8uEhxf9nD1/ey98U3t2vZ0qQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://threejs.org/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://r105.threejsfundamentals.org/threejs/resources/threejs/r105/js/controls/OrbitControls.js"></script>
+    <script>
+        // Gets the image file as base64 encoded string
+        function getFileAsBase64(file) {
+            return new Promise((resolve, reject) => {
+                const fileReader = new FileReader()
+                fileReader.readAsDataURL(file)
+                fileReader.onload = () => {
+                    resolve(fileReader.result)
+                }
+                fileReader.onerror = (error) => {
+                    reject(error)
+                }
+            })
+        }
+
+        // Initializes the 3D scene + lighting.
+        function initScene() {
+            var scene = new THREE.Scene()
+            scene.background = new THREE.Color('white')
+
+            var ambient = new THREE.AmbientLight(0x444444)
+            scene.add(ambient)
+
+            var directionalLight = new THREE.DirectionalLight(0xffeedd)
+            directionalLight.position.set(0, 0, 1).normalize()
+            scene.add(directionalLight)
+
+            return scene
+        }
+
+        // Initializes the camera + parameters
+        function initCamera() {
+            const fov = 45
+            const aspect = window.innerWidth / window.innerHeight
+            const near = 0.1
+            const far = 100
+            const camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
+            camera.position.set(0, 0, 5)
+            return camera
+        }
+
+
+        class PifuRenderer {
+            constructor(server_uri, target_element) {
+                this.server_uri = server_uri
+
+                // Init ThreeJS objects.
+                this.scene = initScene()
+                this.camera = initCamera()
+                this.loader = new THREE.OBJLoader()
+                this.renderer = new THREE.WebGLRenderer({
+                    alpha: true
+                })
+                this.renderer.setSize(window.innerWidth, window.innerHeight)
+                this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement)
+
+                target_element.appendChild(this.renderer.domElement)
+            }
+
+            // Main animation loop used to allow controls (zoom, pan, ...)
+            animate() {
+                window.requestAnimationFrame(this.animate.bind(this))
+                this.controls.update()
+                this.renderer.render(this.scene, this.camera)
+            }
+
+            // Renders an image file (path) using PIFU.
+            async render(file) {
+                const base64_img = await getFileAsBase64(file)
+                var obj_text = await this.callPifuServer(base64_img)
+
+                var obj = this.loader.parse(obj_text)
+                obj.name = '3dmodelpose'
+
+                var selectedObject = this.scene.getObjectByName('3dmodelpose')
+                if (selectedObject) {
+                    this.scene.remove(selectedObject)
+                }
+
+                this.scene.add(obj)
+            }
+
+            // Calls the pifu server and gets the 3d model obj text for the given image.
+            callPifuServer(image) {
+                return new Promise((resolve, reject) => {
+                    var xmlhttp = new XMLHttpRequest()
+                    xmlhttp.open("POST", this.server_uri)
+                    xmlhttp.onload = function() {
+                        resolve(this.responseText)
+                    }
+                    xmlhttp.onerror = function() {
+                        reject(this.error)
+                    }
+                    xmlhttp.send(image)
+                })
+            }
+        }
+    </script>
+    <title>PiFu Viewer</title>
+</head>
+
+<body>
+    <div style="margin: 5px; padding: 5px">
+        <h2>body measurements </h2>
+        <ul>
+            <li> Waist</li>
+        </ul>
+        <input class="form-control form-control-lg" id="selectAvatar" type="file" />
+
+    </div>
+
+    <div id="container"></div>
+
+    <script>
+        const server_uri = "http://34.170.112.43:5000/pose"
+        pifu = new PifuRenderer(server_uri, document.getElementById('container'))
+        pifu.animate()
+        document.getElementById("selectAvatar").addEventListener("change", (event) => {
+            pifu.render(event.target.files[0])
+        });
+    </script>
+</body>
+
+</html>

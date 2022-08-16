@@ -70,14 +70,14 @@
                                     <button type="button" class="btn btn-primary find-size-btn" (click)="step=2;">Continue</button>
                                 </div>
                             </ng-template>
-                            <ng-template #second>
+                            <!-- <ng-template #second>
                                 <div>
                                     <app-video-record [events]="videoEvent.asObservable()" [stepInfo]="2" (updateStep)="step=3;"></app-video-record>
                                 </div>
-                                <!-- <button type="button" class="btn btn-primary find-size-btn" (click)="step=3;">Continue</button> -->
+                                <button type="button" class="btn btn-primary find-size-btn" (click)="step=3;">Continue</button>
 
-                            </ng-template>
-                            <ng-template #third>
+                            </ng-template> -->
+                            <ng-template #second>
                                 <h1>3D Model</h1>
                                 <div>
                                     <iframe class="iframe" src="../../../assets/render.html"></iframe>
