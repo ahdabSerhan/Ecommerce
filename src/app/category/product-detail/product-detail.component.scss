@@ -16,6 +16,19 @@ hr {
     border-top: 1px solid #eee;
 }
 
+h2>span {
+    color: #bc0080;
+}
+
+.progress-bar {
+    background-color: #bc0080!important;
+}
+
+.modal-footer,
+.modal-header {
+    border-top: none!important;
+}
+
 .find-size-btn {
     border-radius: 8px;
     background-color: #bc0080;
@@ -23,6 +36,16 @@ hr {
     text-transform: uppercase;
     letter-spacing: 1px;
     font-weight: 400;
+}
+
+.continue-btn {
+    border-radius: 8px;
+    background-color: #bc0080;
+    border-color: #bc0080;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 400;
+    float: right;
 }
 
 .caption {

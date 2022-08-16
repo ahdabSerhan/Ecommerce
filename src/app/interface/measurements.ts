@@ -18,6 +18,7 @@ export class BodyMeasurements {
   r: number;
   bodyShape: string = "";
   constructor(public height, public keyPoints) {
+    console.log("key points :", keyPoints);
     let length = keyPoints.length;
     this.r = getRatio(
       height,

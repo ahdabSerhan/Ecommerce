@@ -72,7 +72,9 @@ export class VideoRecordComponent implements OnInit {
       );
     });
   }
-  public ngOnInit() {}
+  public ngOnInit() {
+    this.getPose();
+  }
 
   // public ngAfterViewInit() {
   //   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
