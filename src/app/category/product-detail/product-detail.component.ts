@@ -20,6 +20,7 @@ export class ProductDetailComponent implements OnInit {
   data: ProductInfo;
   quantity = 1;
   step = 1;
+  size: string = "M";
   option = <DropdownItem>{};
   relatedProducts: ProductInfo[] = [];
   galleryOptions: NgxGalleryOptions[];
